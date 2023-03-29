@@ -10,13 +10,16 @@ const Notes = () => {
     useEffect(() => {
         fetchAllNotes()
     }, [])
+    const updateNote = (note) => {
+
+    }
     return (
         <React.Fragment>
             <AddNote />
             <div className="row my-3 ">
                 {
                     notes.map((note) => {
-                        return <NoteItem note={note} key={note._id} />
+                        return <NoteItem note={note} updatenote={updateNote} key={note._id} />
                     })
                 }
             </div>
