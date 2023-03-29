@@ -7,7 +7,7 @@ const AddNote = () => {
     const { addNote } = context
     const handleClick = (e) => {
         e.preventDefault();
-        addNote(note)
+        addNote(note.title, note.description, note.tag)
     }
     const onChange = (e) => {
         setNote({ ...note, [e.target.name]: e.target.value })
@@ -40,7 +40,7 @@ const AddNote = () => {
                 </div>
 
                 <button type="submit" className="btn btn-primary" onClick={handleClick}>
-                    Submit
+                    Add Note
                 </button>
             </form>
         </div>

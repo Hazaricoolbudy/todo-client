@@ -1,50 +1,38 @@
 import NoteContext from "./NoteContext";
 import { useState } from "react";
 
+
 const NoteState = (props) => {
+    const hostUrl = 'http://localhost:8000'
 
-    const intialNote = [
-        {
-            "_id": "64227fdef4942ce3cc1c1428",
-            "user": "641adcf94ebea48adeea35b2",
-            "title": "this is first notes",
-            "description": "i want to be a full stack developer",
-            "tag": "aim",
-            "data": "1679982558876",
-            "__v": 0
-        },
-        {
-            "_id": "64227fe0f4942ce3cc1c142a",
-            "user": "641adcf94ebea48adeea35b2",
-            "title": "this is first notes",
-            "description": "i want to be a full stack developer",
-            "tag": "aim",
-            "data": "1679982560534",
-            "__v": 0
-        },
-        {
-            "_id": "64227fe1f4942ce3cc1c142c",
-            "user": "641adcf94ebea48adeea35b2",
-            "title": "this is first notes",
-            "description": "i want to be a full stack developer",
-            "tag": "aim",
-            "data": "1679982561419",
-            "__v": 0
-        },
-        {
-            "_id": "64227fe1f4942ce3cc1c142e",
-            "user": "641adcf94ebea48adeea35b2",
-            "title": "this is first notes",
-            "description": "i want to be a full stack developer",
-            "tag": "aim",
-            "data": "1679982561883",
-            "__v": 0
-        },
-
-    ]
+    let intialNote = []
+    // fetch all notes 
+    const fetchAllNotes = async () => {
+        const response = await fetch(`${hostUrl}/api/notes/fetchallnotes`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'auth-token': ""
+            }
+        })
+        intialNote = await response.json()
+        return intialNote
+    }
+    fetchAllNotes()
     const [notes, setNotes] = useState(intialNote)
     // Add notes
-    const addNote = (title, description, tag) => {
+
+    const addNote = async (title, description, tag) => {
+        // add notes api call
+        const response = await fetch(`${hostUrl}/api/notes/addnotes`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                " auth- token": ""
+            },
+            body: JSON.stringify({ title, description, tag })
+        })
+        const json = response.json();
         console.log("adding a new note")
         let note = {
             "_id": Math.random(),
@@ -55,19 +43,41 @@ const NoteState = (props) => {
             "data": "1679982562259",
             "__v": 0
         };
-        setNotes(notes.concat(note.title, note.description, note.tag))
+        setNotes(notes.concat(note))
     }
     //Delete notes
-    const DeleteNote = () => {
-
+    const DeleteNote = (id) => {
+        console.log(`deleteing a notes with id ${id}`)
+        const newNotes = notes.filter((note) => { return note._id !== id })
+        setNotes(newNotes)
     }
 
     //Edit notes
-    const editNote = () => {
+    const editNote = async (id, title, description, tag) => {
+        //Api call for edit 
 
+        const response = await fetch(`${hostUrl}/api/notes/updatenote/${id}`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                " auth- token": ""
+            },
+            body: JSON.stringify({ title, description, tag })
+        })
+        const json = response.json()
+
+        for (let index = 0; index < notes.length; index++) {
+            const element = notes[index];
+            if (element._id === id) {
+                element.title = title;
+                element.description = description;
+                element.tag = tag
+            }
+
+        }
     }
     return (
-        <NoteContext.Provider value={{ notes, addNote, DeleteNote, editNote }}>
+        <NoteContext.Provider value={{ notes, addNote, DeleteNote, editNote, fetchAllNotes }}>
             {props.children}
         </NoteContext.Provider>
     )
