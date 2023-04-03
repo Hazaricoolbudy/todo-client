@@ -1,9 +1,11 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-
+import { Link, redirect, useLocation } from "react-router-dom";
 const Navbar = () => {
     const location = useLocation();
-
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        redirect('/login')
+    }
     return (
         <React.Fragment>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -23,17 +25,15 @@ const Navbar = () => {
                         <li className="nav-item">
                             <Link className={`nav-link ${location.pathname === '/contactus' ? 'active' : ''}`} to="/contactus">Contact Us</Link>
                         </li>
-
-
                     </ul>
-                    <form className="form-inline my-2 my-lg-0">
-                        <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                        <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
+                    {!localStorage.getItem('token') ? <form className="form-inline my-2 my-lg-0">
+
+                        <Link className="btn btn-outline-success mx-2 my-sm-0" role="button" to="/login">Login</Link>
+                        <Link className="btn btn-outline-success mx-2 my-sm-0" role="buton" to="/singup">SignUp</Link>
+                    </form> : <button className="btn btn-primary" onClick={handleLogout}>Logout</button>}
                 </div>
             </nav>
         </React.Fragment>
     )
 };
-
 export default Navbar;

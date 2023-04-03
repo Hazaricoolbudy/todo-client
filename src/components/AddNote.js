@@ -8,12 +8,13 @@ const AddNote = () => {
     const handleClick = (e) => {
         e.preventDefault();
         addNote(note.title, note.description, note.tag)
+        setNote({ title: "", description: "", tag: "" })
     }
     const onChange = (e) => {
         setNote({ ...note, [e.target.name]: e.target.value })
     }
     return (
-        <div>
+        <div className="container my-3">
             <h2>Add your notes</h2>
             <form>
                 <div className="form-group">
@@ -25,7 +26,8 @@ const AddNote = () => {
                         name="title"
                         aria-describedby="emailHelp"
                         onChange={onChange}
-
+                        value={note.title}
+                        required
                     />
                 </div>
                 <div className="form-group">
@@ -36,6 +38,8 @@ const AddNote = () => {
                         id="description"
                         name="description"
                         onChange={onChange}
+                        value={note.description}
+                        required
                     />
                 </div>
                 <div className="form-group">
@@ -46,10 +50,12 @@ const AddNote = () => {
                         id="tag"
                         name="tag"
                         onChange={onChange}
+                        value={note.tag}
+                        required
                     />
                 </div>
 
-                <button type="submit" className="btn btn-primary" onClick={handleClick}>
+                <button type="submit" className="btn btn-primary" onClick={handleClick} disabled={note.title.length < 5 || note.description.length < 5}>
                     Add Note
                 </button>
             </form>
